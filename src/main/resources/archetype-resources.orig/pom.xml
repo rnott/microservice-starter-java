@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+  <packaging>pom</packaging>
+  <name>Mircoservice Sample Project</name>
+
+	<properties>
+		<spring-boot.version>2.2.4.RELEASE</spring-boot.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.30</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>7.1.0</version>
+			</dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.200</version>
+            </dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+	            <!--
+                  Standard Maven plugins with specified versions to allow for repeatable builds.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                    	<!-- mock subproject not yet upgraded to 11 -->
+                        <source>11</source>
+                        <target>11</target>
+                        <showWarnings>true</showWarnings>
+                        <fork>true</fork>
+                        <meminitial>128m</meminitial>
+                        <maxmem>1024m</maxmem>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.8.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>3.0.0-M4</version>
+                    <configuration>
+                        <skip>${skipITs}</skip>
+                        <systemPropertyVariables></systemPropertyVariables>
+                    </configuration>
+                </plugin>
+
+
+                <!--
+                 Report most recent dependency versions
+                     mvn versions:display-dependency-updates
+                 Report most recent plugin versions
+                     mvn versions:display-plugin-updates
+                -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.7</version>
+                    <configuration>
+                        <generateBackupPoms>false</generateBackupPoms>
+                    </configuration>
+                </plugin>
+
+                <!--
+                    Add generated code as a source folder automatically to your IDE.
+                    Simply include in your POM build and add a configuration element to specify the folder(s).
+                -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>add-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                            <configuration>
+                            	<classifier>bin</classifier>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+				<!--
+					Test code coverage 
+				 -->
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.5</version>
+					<configuration></configuration>
+					<executions>
+						<execution>
+							<id>jacoco-initialize</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+                <!--
+                    enforce a minimum version of Maven
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-maven</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.5.0</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                    OWASP: check for known vulnerabilities in project dependencies.
+                -->
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>5.2.4</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+			</plugins>
+		</pluginManagement>
+
+        <plugins>
+            <!-- Enforce a minimum version of Maven -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+
+            <!--
+                Check for known vulnerabilities in project dependencies.
+            -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+            </plugin>
+
+            <!--
+                Install code coverage agent 
+            -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+             </plugin>
+        </plugins>
+
+	</build>
+
+</project>

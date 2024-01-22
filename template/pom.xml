@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.rnott.example</groupId>
+  <artifactId>example-service</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Microservice Sample Project</name>
+
+  <properties>
+    <!--
+        IMPORTANT: plugin versions for this project require Maven 3.6.3 or better
+        Tools to help with dependency management:
+        mvn versions:display-dependency-updates - check for dependency updates
+        mvn versions:display-plugin-updates - check for plugin updates
+        mvn dependency:tree - view the dependency hierarchy (\-\-Dincludes=<groupId>:<artifactId> to filter)
+        mvn help:effective-pom - display the effective POM
+        mvn dependency:analyze - check for unused dependencies
+    -->
+
+    <!-- plugins
+     -->
+    <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
+    <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+    <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
+    <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
+    <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+    <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+    <maven-site-plugin.version>4.0.0-M13</maven-site-plugin.version>
+    <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+    <build-helper-maven-plugin.version>3.5.0</build-helper-maven-plugin.version>
+    <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
+    <openapi-generator-maven-plugin.version>7.2.0</openapi-generator-maven-plugin.version>
+    <owasp.dependency-check-maven.version>9.0.9</owasp.dependency-check-maven.version>
+    <!-- dependencies -->
+   <spring-boot.version>3.2.1</spring-boot.version>
+    <swagger-annotations.verion>1.6.12</swagger-annotations.verion>
+    <openapitools.jackson-databind-nullable.version>0.2.6</openapitools.jackson-databind-nullable.version>
+
+    <testcontainers.version>1.19.3</testcontainers.version>
+    <restassured.version>5.4.0</restassured.version>
+    <lombok.version>1.18.30</lombok.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <slf4j-api.version>2.0.11</slf4j-api.version>
+    <postgresql.version>42.7.1</postgresql.version>
+    <!-- this needs to be kept in sync with hibernate version from spring data -->
+    <hibernate-jpamodelgen.version>5.4.10.Final</hibernate-jpamodelgen.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>${swagger-annotations.verion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openapitools</groupId>
+        <artifactId>jackson-databind-nullable</artifactId>
+        <version>${openapitools.jackson-databind-nullable.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${restassured.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${mapstruct.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgresql.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-jpamodelgen</artifactId>
+        <version>${hibernate-jpamodelgen.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!--
+         Standard Maven plugins with specified versions to allow for repeatable builds.
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven-assembly-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${maven-clean-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <!-- mock subproject not yet upgraded to 11 -->
+            <source>21</source>
+            <target>21</target>
+            <showWarnings>true</showWarnings>
+            <fork>true</fork>
+            <meminitial>128m</meminitial>
+            <maxmem>1024m</maxmem>
+            <annotationProcessorPaths>
+              <!-- lombok must be before mapstruct -->
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+              </path>
+              <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+        <!--
+          enforce a minimum version of Maven
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven-enforcer-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>enforce-maven</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requireMavenVersion>
+                    <version>3.6.3</version>
+                  </requireMavenVersion>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe-plugin.version}</version>
+          <configuration>
+            <skip>false</skip>
+            <systemPropertyVariables/>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven-install-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources-plugin.version}</version>
+          <executions>
+            <execution>
+              <configuration>
+                <encoding>UTF-8</encoding>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven-source-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+        <!--
+          Add generated code as a source folder automatically to your IDE.
+          Simply include in your POM build and add a configuration element to specify the folder(s).
+        -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build-helper-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>add-source</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>add-source</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!--
+          Report most recent dependency versions
+          mvn versions:display-dependency-updates
+          Report most recent plugin versions
+          mvn versions:display-plugin-updates
+       -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${versions-maven-plugin.version}</version>
+          <configuration>
+            <generateBackupPoms>false</generateBackupPoms>
+          </configuration>
+        </plugin>
+        <!--
+          OWASP: check for known vulnerabilities in project dependencies.
+       -->
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>${owasp.dependency-check-maven.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.openapitools</groupId>
+          <artifactId>openapi-generator-maven-plugin</artifactId>
+          <version>${openapi-generator-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+              <configuration>
+                <classifier>bin</classifier>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <!--
+		  Test code coverage
+		-->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.11</version>
+          <configuration/>
+          <executions>
+            <execution>
+              <id>jacoco-initialize</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>report-aggregate</goal>
+              </goals>
+              <configuration>
+                <dataFileIncludes>
+                  <dataFileInclude>**/jacoco.exec</dataFileInclude>
+                </dataFileIncludes>
+                <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <!-- Enforce a minimum version of Maven -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <!--
+         Check for known vulnerabilities in project dependencies.
+      -->
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+      </plugin>
+      <!--
+         Install code coverage agent
+      -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <!--
+        OpenAPI code generator
+      -->
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator-maven-plugin.version}</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <modules>
+    <module>api</module>
+    <module>service</module>
+    <!--
+    <module>acceptance</module>
+    <module>container</module>
+    -->
+  </modules>
+
+</project>

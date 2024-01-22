@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.rnott.example</groupId>
+    <artifactId>exapleSerice</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <artifactId>acceptance</artifactId>
+  <name>Acceptance Tests</name>
+
+	<dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <!-- this must match the jersery version spring boot is using -->
+            <version>2.29.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.springtestdbunit</groupId>
+            <artifactId>spring-test-dbunit</artifactId>
+            <version>1.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.5.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <skip>${skipITs}</skip>
+                    <systemPropertyVariables></systemPropertyVariables>
+                    <arguments>
+                        <argument>--logging.level.root=DEBUG</argument>
+                        <argument>--logginglogging.file.main.level.root=OFF</argument>
+                        <argument>--logginglogging.level.org.springframework.boot.autoconfigure.logging.AutoConfigurationReportLoggingInitializer=DEBUG</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

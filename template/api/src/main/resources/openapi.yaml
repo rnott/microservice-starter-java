@@ -1,0 +1,766 @@
+openapi: 3.0.3
+info:
+  title: Example service specification
+  description: >
+    Service methods for interacting with version 1 of an example service
+  version: 1.0-beta
+paths:
+
+  /api/service/v1/examples:
+    description: >
+      Service methods that target a collection of instances
+    get:
+      tags:
+        - Example
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOfExamples'
+          description: Collection of instances
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+      security:
+        -
+          openId: []
+      operationId: search
+      summary: Search entity instances
+      description: >
+        Search for instances matching zero or more criteria. Criteria
+        can be combined to provide additional filtering. Provide
+        standard semantics, for example:
+          * all presented criteria are required to match (AND)
+          * when multiple values within a single criteria are provided
+            matching any one is considered a match (OR)
+
+      parameters:
+        # common parameters
+        - $ref: '#/components/parameters/Identities'
+        - $ref: '#/components/parameters/Deleted'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/SortCriteria'
+        # domain specific parameters
+        -
+          name: name
+          description: >
+            Criteria for searching by name
+          schema:
+            type: string
+          in: query
+          required: false
+
+    post:
+      tags:
+        - Example
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Example'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Example'
+          description: Instance created
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 400 - Instance data failed validation
+              * 401 - Authentication required
+              * 403 - Access denied
+      operationId: create
+      summary: Create a new instance
+      description: >
+        Creates a new instance
+
+  '/api/service/v1/examples/{id}':
+    description: >
+      Service methods that target a specific instance
+
+    get:
+      tags:
+        - Example
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Example'
+          description: Instance with the specified identifier
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+           General error condition. Specific errors include:
+            * 401 - Authentication required
+            * 403 - Access denied
+            * 404 - Instance not found
+      operationId: fetch
+      summary: Fetch an instance
+      description: >
+        Fetch an instance by identity
+
+    put:
+      tags:
+        - Example
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Example'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Example'
+          description: Instance replaced
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 400 - Instance failed validation
+              * 401 - Authentication required
+              * 403 - Access denied
+              * 404 - Instance not found
+      operationId: update
+      summary: Replace instance
+      description: >
+        Fully replace an existing instance with the state provided. For idempotent services
+        this can also be used to create the instance if it does not exist
+
+    patch:
+      tags:
+        - Example
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/PatchRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Example'
+          description: Instance attributes were modified
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 400 - One or more attributes were invalid
+              * 401 - Authentication required
+              * 403 - Access denied
+              * 404 - Instance not found
+      operationId: patch
+      summary: Update instance attributes
+      description: >
+        Update selected instance attributes, leaving all other attributes intact
+
+    delete:
+      tags:
+        - Example
+      responses:
+        '204':
+          description: Success - no content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+      operationId: delete
+      summary: Remove an instance
+      description: >
+        Remove an instance from the system. The entity is soft-deleted.
+        It is safe to consider an instance that never existed or as
+        soft-deleted as successfully removed
+    parameters:
+      -
+        name: id
+        description: Instance identifier
+        schema:
+          $ref: '#/components/schemas/UUID'
+        in: path
+        required: true
+
+  '/api/service/v1/examples/{id}/tags':
+    description: >
+      Service methods that target metadata tagging of a specific instance
+
+    get:
+      tags:
+        - Example
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+          description: Instance with the specified identifier
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+              * 404 - Instance not found
+      operationId: fetchTags
+      summary: Fetch instance metadata tags
+      description: >
+        Fetch all metadata tags for a specific instance
+
+    put:
+      tags:
+        - Example
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+        description: Set of tags to assign to the instance
+      responses:
+        '204':
+          description: Success - there is no content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+              * 404 - Instance not found
+      operationId: replaceTags
+      summary: Replace the metadata tags for an instance
+      description: >
+        Replace all metadata tags for a specific instance by first deleting any existing
+        tags, then adding the tags specified in the payload
+
+    delete:
+      tags:
+        - Example
+      responses:
+        '204':
+          description: Success - there is no content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+              * 404 - Instance not found
+      operationId: clearTags
+      summary: Remove all metadata tags from an instance
+      description: >
+        Remove all metadata tags from the specified instance
+    parameters:
+      -
+        name: id
+        description: Instance identifier
+        schema:
+          $ref: '#/components/schemas/UUID'
+        in: path
+        required: true
+
+  '/api/service/v1/examples/{id}/tags/{name}':
+    description: >
+      Service methods that target individual metadata tags of a specific instance
+
+    get:
+      tags:
+        - Example
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Tag with the specified name
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+              * 404 - Instance not found or tag not found
+      operationId: fetchSingleTag
+      summary: Fetch a metadata tag by name
+      description: >
+        Fetch a metadata tag by name for a specific instance
+
+    put:
+      tags:
+        - Example
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '204':
+          description: Success - there is no content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+              * 404 - Instance not found
+      operationId: replaceSingleTag
+      summary: Replace a metadata tag by name
+      description: >
+        Replace a metadata tag by name. If the tag does not exist, it is created
+
+    delete:
+      tags:
+        - Example
+      responses:
+        '204':
+          description: Success - there is no content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: >
+            General error condition. Specific errors include:
+              * 401 - Authentication required
+              * 403 - Access denied
+      operationId: removeSingleTag
+      summary: Remove a metadata tag by name
+      description: >
+        Remove a metadata tag by name. The operation is considered successful
+        if either the tag or entity does not exist
+    parameters:
+      -
+        name: id
+        description: Instance identifier
+        schema:
+          $ref: '#/components/schemas/UUID'
+        in: path
+        required: true
+      -
+        name: name
+        description: metadata tag name
+        schema:
+          type: string
+        in: path
+        required: true
+
+components:
+  schemas:
+    #
+    # Common definitions
+    #
+    Hypermedia:
+      type: array
+      items:
+        $ref: '#/components/schemas/LinkDescription'
+
+    LinkDescription:
+      description: >
+        Supplies the information required to support  Hypermedia as the Engine of Application State
+        (HATEOAS). All resource types must provide a  property of this type
+      type: object
+      required:
+        - href
+        - rel
+      properties:
+        href:
+          description: |
+            The resource identifier (URI) of the link
+          $ref: '#/components/schemas/URI'
+        rel:
+          description: |
+            Specifies the relationship type
+          type: string
+        method:
+          description: |
+            Specifies the HTTP method to be used
+          type: string
+        enctype:
+          description: |
+            Specifies the encoding type
+          type: string
+        mediaType:
+          description: |
+            Specifies the media type
+          type: string
+
+    ErrorItem:
+      description: >
+        Describes an error item within the context of problem details
+      type: object
+      properties:
+        detail:
+          description: A human readable description of the error.
+          type: string
+        pointer:
+          description: A JSON pointer to locate the problem within the request's content.
+          type: string
+        extensions:
+          type: object
+          additionalProperties: true
+
+    ProblemDetails:
+      description: >
+        Machine readable details of errors in an HTTP response as defined by RFC 9457.
+        This definition defines an explicit 'error' extension, as shown in the RFC,
+        to handle multiple problems. Generic extensions are available through the use
+        of the additional properties definition.
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          description: >
+            A URI reference that identifies the problem type. Consumers MUST use the
+            URI (after resolution, if necessary) as the problem type's primary identifier.
+          type: string
+        title:
+          description: >
+            A short, human-readable summary of the problem type. This value should be
+            common to all instances of the problem. (see 'detail' for instance specific
+            text)
+          type: string
+        status:
+          description: >
+            The HTTP status code ([RFC7231], Section 6) generated by the origin server
+            for this occurrence of the problem.
+          type: integer
+          minimum: 100
+          maximum: 599
+        detail:
+          description: >
+            A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        instance:
+          description: >
+            A URI reference that identifies the specific occurrence of the problem.
+            When the URI is dereferenceable, the problem details object can be fetched
+            from it. It might also return information about the problem occurrence in
+            other formats through use of proactive content negotiation.
+            When the URI is not dereferenceable, it serves as a unique identifier
+            for the problem occurrence that may be of significance to the server but is
+            opaque to the client.
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorItem"
+        extensions:
+          type: object
+          additionalProperties: true
+
+    UUID:
+      format: uuid
+      description: |
+        A universally (or globally) unique identifier
+      type: string
+
+    URI:
+      description: >
+        A RFC - 3988 compliant Universal Resource Identifier value.
+      type: string
+      format: uri
+
+    PatchDocument:
+      description: >
+        A JSONPatch document as defined by RFC 6902
+        https://www.rfc-editor.org/rfc/rfc6902.html#section-4.1
+      required:
+        - op
+        - path
+      type: object
+      properties:
+        op:
+          description: >
+            The operation to be performed
+              * add - adds a value to a collection or object member
+                * If the target location specifies an array index, a new value is
+                  inserted into the array at the specified index
+                * If the target location specifies an object member that does not
+                  already exist, a new member is added to the object
+                * If the target location specifies an object member that does exist,
+                  that member's value is replaced
+              * remove - removes the value at the target location
+              * replace - replaces the value at the target location
+                with a new value. The target location MUST exist for the operation
+                to be successfu
+              * move - removes the value at a specified location and
+                adds it to the target location
+              * copy - copies the value at a specified location to the
+                target location
+              * test - tests that a value at the target location is
+                equal to a specified value
+          enum:
+            - add
+            - remove
+            - replace
+            - move
+            - copy
+            - test
+          type: string
+        path:
+          description: A JSON-Pointer to the target
+          type: string
+          format: json-pointer
+        value:
+          description: The value to be used within the operations.
+          type: object
+        from:
+          description: A string containing a JSON Pointer to the source.
+          type: string
+
+    PatchRequest:
+      type: array
+      items:
+        $ref: "#/components/schemas/PatchDocument"
+
+    InstanceReference:
+      description: >
+        Reference to an instance of a data type where the referenced type is contextual and known to the caller
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        links:
+          description: Hypermedia links
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkDescription'
+
+
+    EntityMetadata:
+      description: >
+        Entity metadata managed by the service. Any changes made to this data
+        are ignored by the service.
+      readOnly: true
+      properties:
+        links:
+          description: Optional HATEOAS support
+          $ref: '#/components/schemas/Hypermedia'
+        created:
+          format: date-time
+          description: Records when the entity was created
+          type: string
+        modified:
+          format: date-time
+          description: Records when the entity was last modified
+          type: string
+        createdBy:
+          description: Records the identity that created the entity
+          type: string
+        modifiedBy:
+          description: Records the identity that modified the entity
+          type: string
+
+    EntityState:
+      type: string
+      description: >
+        Indicates the entity state:
+          * ACTIVE - indicates the entity is an active participant in normal system workloads
+          * DISABLED - the entity is visible but is prohibited from participating in normal system workloads
+        You can extend this type to fit your needs.
+      enum:
+        - ACTIVE
+        - DISABLED
+      default: ACTIVE
+
+    ServiceEntity:
+      description: >
+        Base type specifying properties common to all service entities
+      type: object
+      required:
+        - version
+      properties:
+        id:
+          description: instance identifier
+          $ref: '#/components/schemas/UUID'
+        state:
+          type: string
+          $ref: '#/components/schemas/EntityState'
+        version:
+          description: >
+            An incremental version that can be used for conflict detection and resolution.
+            The value is managed by the service and MUST NOT be modified by the client.
+          type: integer
+          format: int64
+          minimum: 0
+          default: 0
+          readOnly: true
+        metadata:
+          $ref: '#/components/schemas/EntityMetadata'
+
+    PagedResult:
+      description: >
+        Provides information about the current page of data.
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          minimum: 1
+        resultCount:
+          type: integer
+          minimum: 0
+        totalCount:
+          type: integer
+          minimum: 0
+        currentPage:
+          type: integer
+          minimum: 1
+        lastPage:
+          type: integer
+          minimum: 1
+        first:
+          $ref: '#/components/schemas/URI'
+        last:
+          $ref: '#/components/schemas/URI'
+        current:
+          $ref: '#/components/schemas/URI'
+        previous:
+          $ref: '#/components/schemas/URI'
+        next:
+          $ref: '#/components/schemas/URI'
+
+    #
+    # API specific
+    #
+    Example:
+      description: An example service entity which is the focus of one or more API methods
+      anyOf:
+        - $ref: '#/components/schemas/ServiceEntity'
+        - type: object
+          required:
+            - name
+          properties:
+            name:
+              description: Name of the instance
+              type: string
+            description:
+              description: Instance description text
+              type: string
+
+    PageOfExamples:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PagedResult'
+        - properties:
+            data:
+              description: Collection of entity data
+              type: array
+              items:
+                $ref: '#/components/schemas/Example'
+
+  parameters:
+    Limit:
+      name: limit
+      description: Limits the maximum number of results returned
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 1000
+      in: query
+      required: false
+    Page:
+      name: page
+      description: Page number indicating the subset of results to be returned
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      in: query
+      required: false
+    SortCriteria:
+      description: >
+        Sort criteria: each entry identifies a field and begins with a plus '+' for
+        ascending order or a minus '-' for descending order. Criteria is applied in
+        the sequence specified (e.g. precedence). Ordering is ascending if not specified.
+      name: sort
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          pattern: '[+-][a-zA-Z0-9]+'
+      explode: false
+    Deleted:
+      name: deleted
+      description: Require matching entities to be deleted
+      schema:
+        type: boolean
+      in: query
+      required: false
+    Identities:
+      name: id
+      description: entity identifier (can be specified multiple times)
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/UUID'
+      in: query
+      required: false
+  securitySchemes:
+    openId:
+      description: >
+        OpenID Connect configuration used to require that service methods are only used by
+        authorized clients. The connect URL should be the location of the identity provider (IP)
+        configuration endpoint, which is a public endpoint where clients can use to automate
+        their configuration
+      openIdConnectUrl: 'https://my-identity-provider/.well-known/openid-configuration'
+      type: openIdConnect
+
+security:
+  -
+    openId: []
+tags:
+  -
+    name: Example

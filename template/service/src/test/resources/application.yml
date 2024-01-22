@@ -1,0 +1,10 @@
+logging:
+  pattern:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

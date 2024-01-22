@@ -1,0 +1,48 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+
+FROM centos
+
+${symbol_pound} Set TimeZone to UTC
+RUN mv /etc/localtime /etc/localtime.bak
+RUN ln -s /usr/share/zoneinfo/UTC /etc/localtime
+
+${symbol_pound} Must have utilities
+${symbol_pound}RUN yum install -y wget unzip
+${symbol_pound}RUN yum install -y openssh-clients
+RUN yum install -y java-11-openjdk 
+
+WORKDIR /usr/local
+
+${symbol_pound}
+${symbol_pound} Dependencies
+${symbol_pound}
+${symbol_pound}ARG JDK=jdk-11.0.2
+${symbol_pound}ARG ARTIFACT=openjdk-11.0.2_linux-x64_bin.tar.gz
+
+${symbol_pound}ARG REPO=http://ci-artifacts.devops.fds.com/artifactory
+${symbol_pound}
+${symbol_pound} Download and install
+${symbol_pound}
+${symbol_pound}RUN wget -O ${symbol_dollar}{ARTIFACT} ${symbol_dollar}{REPO}/binrepo/java11/${symbol_dollar}{ARTIFACT} && ${symbol_escape}
+${symbol_pound}    tar -xf ${symbol_dollar}{ARTIFACT} && ${symbol_escape}
+${symbol_pound}    rm ${symbol_dollar}{ARTIFACT}
+ 
+${symbol_pound}
+${symbol_pound} Install SpringBoot executable
+${symbol_pound}
+COPY /maven/service-bin.jar bin
+
+${symbol_pound}
+${symbol_pound} Environment
+${symbol_pound}
+${symbol_pound}ENV JAVA_HOME /usr/local/${symbol_dollar}{JDK}
+ENV JAVA_HOME ${symbol_dollar}(dirname ${symbol_dollar}(dirname ${symbol_dollar}(readlink ${symbol_dollar}(readlink ${symbol_dollar}(which javac)))))
+ENV PATH ${symbol_dollar}PATH:${symbol_dollar}JAVA_HOME/bin
+
+${symbol_pound}
+${symbol_pound} Launch
+${symbol_pound}
+EXPOSE 8080 8080
+CMD ["java", "-jar", "bin/service-bin.jar"]

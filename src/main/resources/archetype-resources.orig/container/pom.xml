@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>${groupId}</groupId>
+		<artifactId>${rootArtifactId}</artifactId>
+		<version>${version}</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+    <artifactId>${artifactId}</artifactId>
+    <name>Containerization</name>
+    <!--
+    	This is documented but does not appear to work (would be nice if it did).
+
+    	docker : This binds docker:build to the package phase and 
+    		docker:start / docker:stop to the pre- and post-integration phase 
+    		respectively. Also docker:push is bound to the deploy phase.
+
+		docker-build : Much like the docker packaging, except that there are 
+			no integration tests configured by default.
+
+		docker-tar : Create a so called Docker tar archive which is used as
+			the artifact and which later can be used for building an image. 
+			It contains essentially a Dockerfile with supporting files. 
+			See docker:source for more details.
+    <packaging>docker</packaging>
+     -->
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>service</artifactId>
+			<version>${project.version}</version>
+			<classifier>bin</classifier>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.30.0</version>
+				<!--
+					Need to bind build goal to a phase since packaging
+					above doesn't work.
+				-->
+				<executions>
+					<execution>
+						<id>docker-buid</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<verbose>false</verbose>
+<!--
+					<sourceDirectory>${project.build.resources[0].directory}/docker</sourceDirectory>
+-->
+					<sourceDirectory>src/main/resources</sourceDirectory>
+					<!-- 
+						Specify which machine to use. A machine named 'maven' will be created 
+						and started if it does not exist. When using Docker Desktop, there will be 
+						an existing machine name "default". Use the docker-machine env <name> command 
+						to manually switch the machine in use.
+					 -->
+					<machine>
+						<name>maven</name>
+						<autoCreate>true</autoCreate>
+					</machine>
+
+					<images>
+						<image>
+							<name>%g/%a:%v</name>
+							<!--
+							<alias>service</alias> 
+							 -->
+							<build>
+								<!--
+								  When using archetype:create-from-project to generate an archetype,
+								  Maven will not pick up the Docker file since in does not have an
+								  extension that matches the filter set. So we add a .txt extension
+								  so it will be picked up.
+								-->
+								<dockerFile>Dockerfile.txt</dockerFile>
+								<assembly>
+								  <inline>
+								    <dependencySets>
+								      <dependencySet>
+								        <includes>
+								          <include>${project.groupId}:service</include>
+								        </includes>
+								        <outputDirectory>.</outputDirectory>
+								        <outputFileNameMapping>service-bin.jar</outputFileNameMapping>
+								      </dependencySet>
+								    </dependencySets>
+								  </inline>
+								</assembly>
+							</build>
+						</image>
+					</images>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

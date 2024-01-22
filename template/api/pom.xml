@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.rnott.example</groupId>
+    <artifactId>example-service</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <artifactId>example-api</artifactId>
+  <name>API</name>
+
+  <dependencies>
+    <!--
+    The plugin generates a POM listing the dependencies it expects
+    at compile/runtime to support the generated code:
+    target/generated-sources/openapi/pom.xml
+    -->
+    <!--
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+    </dependency>
+    -->
+    <!--
+    NOTE: OpenAPI jaxrs-spec generator uses the old swagger
+    annotation package. When the generator supports the
+    'oas3' configuration option, v3 packaging can be used
+    (spring generator has enabled the option for reference)
+     -->
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jersey</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>${project.build.directory}/generated-sources/openapi/src/gen/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>
+                ${project.basedir}/src/main/resources/openapi.yaml
+              </inputSpec>
+              <generatorName>jaxrs-spec</generatorName>
+              <apiPackage>org.rnott.example.api</apiPackage>
+              <modelPackage>org.rnott.example.api</modelPackage>
+              <configOptions>
+                <!-- Jakarta is required by SpringBoot v3 -->
+                <useJakartaEe>true</useJakartaEe>
+                <!--
+                use swagger v3 annotations
+                note: this does not yet work for the jaxrs-spec generator
+                 -->
+                <oas3>true</oas3>
+                <!-- name things properly -->
+                <useTags>true</useTags>
+                <dateLibrary>java8</dateLibrary>
+                <interfaceOnly>true</interfaceOnly>
+                <generateSupportingFiles>true</generateSupportingFiles>
+                <generateApiTests>false</generateApiTests>
+                <generateModelTests>false</generateModelTests>
+                <generateApiDocumentation>true</generateApiDocumentation>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+     </plugins>
+  </build>
+
+</project>
