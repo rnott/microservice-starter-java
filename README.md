@@ -1,5 +1,5 @@
 # Microservice Starter for Java
-**This is a Work In Progress and not yet suitable for production use**
+!!! This is a Work In Progress and not yet suitable for production use !!!
 This project provides an archetypal and opinionated approach to Java/Sptring based microservice development 
 including best practices, useful features, a modern technology stack and starters (or stubs) for implementing 
 common use cases. Its use provides fast ramp up and helps ensure that all your new microservices conform to 
