@@ -4,26 +4,26 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.rnott.example</groupId>
-		<artifactId>exapleSerice</artifactId>
+		<artifactId>example-service</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-    <artifactId>container</artifactId>
+    <artifactId>example-container</artifactId>
     <name>Containerization</name>
     <!--
     	This is documented but does not appear to work (would be nice if it did).
 
-    	docker : This binds docker:build to the package phase and 
-    		docker:start / docker:stop to the pre- and post-integration phase 
+    	docker : This binds docker:build to the package phase and
+    		docker:start / docker:stop to the pre- and post-integration phase
     		respectively. Also docker:push is bound to the deploy phase.
 
-		docker-build : Much like the docker packaging, except that there are 
+		docker-build : Much like the docker packaging, except that there are
 			no integration tests configured by default.
 
 		docker-tar : Create a so called Docker tar archive which is used as
-			the artifact and which later can be used for building an image. 
-			It contains essentially a Dockerfile with supporting files. 
+			the artifact and which later can be used for building an image.
+			It contains essentially a Dockerfile with supporting files.
 			See docker:source for more details.
     <packaging>docker</packaging>
      -->
@@ -31,7 +31,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>service</artifactId>
+			<artifactId>example-impl</artifactId>
 			<version>${project.version}</version>
 			<classifier>bin</classifier>
 		</dependency>
@@ -43,14 +43,14 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.30.0</version>
+				<version>0.43.4</version>
 				<!--
 					Need to bind build goal to a phase since packaging
 					above doesn't work.
 				-->
 				<executions>
 					<execution>
-						<id>docker-buid</id>
+						<id>docker-build</id>
 						<phase>package</phase>
 						<goals>
 							<goal>build</goal>
@@ -63,10 +63,10 @@
 					<sourceDirectory>${project.build.resources[0].directory}/docker</sourceDirectory>
 -->
 					<sourceDirectory>src/main/resources</sourceDirectory>
-					<!-- 
-						Specify which machine to use. A machine named 'maven' will be created 
-						and started if it does not exist. When using Docker Desktop, there will be 
-						an existing machine name "default". Use the docker-machine env <name> command 
+					<!--
+						Specify which machine to use. A machine named 'maven' will be created
+						and started if it does not exist. When using Docker Desktop, there will be
+						an existing machine name "default". Use the docker-machine env <name> command
 						to manually switch the machine in use.
 					 -->
 					<machine>
@@ -78,7 +78,7 @@
 						<image>
 							<name>%g/%a:%v</name>
 							<!--
-							<alias>service</alias> 
+							<alias>service</alias>
 							 -->
 							<build>
 								<!--
@@ -93,7 +93,7 @@
 								    <dependencySets>
 								      <dependencySet>
 								        <includes>
-								          <include>${project.groupId}:service</include>
+								          <include>${project.groupId}:service-impl</include>
 								        </includes>
 								        <outputDirectory>.</outputDirectory>
 								        <outputFileNameMapping>service-bin.jar</outputFileNameMapping>
