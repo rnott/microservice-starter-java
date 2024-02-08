@@ -1,6 +1,6 @@
 # Microservice Starter for Java
 !!! This is a Work In Progress and not yet suitable for production use !!!
-While the service template if fully functional, the Maven archetype is not due to lack of required plugin support. 
+While the service prototype is fully functional, the Maven archetype is not due to lack of required plugin support. 
 * Further investigate the use of https://www.mojohaus.org/xml-maven-plugin/examples/transform-change-regexp.html
 * Investigate the use of gradle and plugin https://github.com/neva-dev/gradle-fork-plugin
 
