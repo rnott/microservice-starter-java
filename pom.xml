@@ -43,7 +43,7 @@
           </configuration>
         </plugin>
         <!--
-        Dynamically copy files from the template directory to archetype resources. This needs
+        Dynamically copy files from the prototype directory to archetype resources. This needs
         to be performed in steps so that we can rename path segments to those required by the
         archetype plugin. Specifically, we want to rename org/rnott/example to __artifactId__
         so that you can use your own package name when using the archetype. This requires us
@@ -64,7 +64,7 @@
                 <outputDirectory>${basedir}/src/main/resources/archetype-resources</outputDirectory>
                 <resources>
                   <resource>
-                    <directory>${basedir}/template</directory>
+                    <directory>${basedir}/prototype</directory>
                     <includes>
                       <include>*</include>
                       <include>api/**</include>
@@ -88,7 +88,7 @@
                 <outputDirectory>${basedir}/src/main/resources/archetype-resources</outputDirectory>
                 <resources>
                   <resource>
-                    <directory>${basedir}/template</directory>
+                    <directory>${basedir}/prototype</directory>
                     <includes>
                       <include>service/*</include>
                       <include>service/src/main/resources/**</include>
@@ -112,7 +112,11 @@
                 <outputDirectory>${basedir}/src/main/resources/archetype-resources/service/src/main/java/__artifactId__</outputDirectory>
                 <resources>
                   <resource>
-                    <directory>${basedir}/template/service/src/main/java/org/rnott/example</directory>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.RegExpFileMapper">
+                      <pattern>(Example)(.*).java</pattern>
+                      <replacement>Foo$2.java</replacement>
+                      <replaceAll>true</replaceAll>
+                    </fileMapper>                <directory>${basedir}/prototype/service/src/main/java/org/rnott/example</directory>
                     <excludes>
                       <exclude>**/target/**</exclude>
                     </excludes>
@@ -132,7 +136,7 @@
                 <outputDirectory>${basedir}/src/main/resources/archetype-resources</outputDirectory>
                 <resources>
                   <resource>
-                    <directory>${basedir}/template</directory>
+                    <directory>${basedir}/prototype</directory>
                     <includes>
                       <include>service/*</include>
                       <include>service/src/test/resources/**</include>
@@ -156,7 +160,7 @@
                 <outputDirectory>${basedir}/src/main/resources/archetype-resources/service/src/test/java/__artifactId__</outputDirectory>
                 <resources>
                   <resource>
-                    <directory>${basedir}/template/service/src/test/java/org/rnott/example</directory>
+                    <directory>${basedir}/prototype/service/src/test/java/org/rnott/example</directory>
                     <excludes>
                       <exclude>**/target/**</exclude>
                     </excludes>
@@ -172,26 +176,30 @@
         primarily ${artifactId} so that package and import declarations work as expected.
         -->
         <plugin>
-          <groupId>io.github.floverfelt</groupId>
-          <artifactId>find-and-replace-maven-plugin</artifactId>
+          <groupId>com.google.code.maven-replacer-plugin</groupId>
+          <artifactId>replacer</artifactId>
+          <version>1.5.3</version>
           <executions>
             <execution>
-              <id>find-and-replace-code</id>
-              <phase>validate</phase>
+              <phase>generate-sources</phase>
               <goals>
-                <goal>find-and-replace</goal>
+                <goal>replace</goal>
               </goals>
-              <configuration>
-                <replacementType>file-contents</replacementType>
-                <baseDir>${basedir}/src/main/resources/archetype-resources/</baseDir>
-                <findRegex>org.rnott.example</findRegex>
-                <replaceValue>${project.artifactId}</replaceValue>
-                <recursive>true</recursive>
-              </configuration>
             </execution>
           </executions>
+          <configuration>
+            <includes>
+              <include>${basedir}/src/main/resources/archetype-resources</include>
+            </includes>
+            <replacements>
+              <replacement>
+                <token>@FOO@</token>
+                <value>${my.custom.property}</value>
+              </replacement>
+            </replacements>
+          </configuration>
         </plugin>
-      </plugins>
+     </plugins>
     </pluginManagement>
   </build>
 </project>

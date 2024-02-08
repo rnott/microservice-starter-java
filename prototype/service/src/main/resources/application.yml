@@ -1,0 +1,25 @@
+#
+# https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html
+#
+
+#
+# Opt-in to actuator endpoints. This doesn't appear to work
+# despite the documentation to the contrary.
+#
+management.endpoints:
+  enabled-by-default: false
+  info.enabled: true
+  health.enabled: true
+  metrics.enabled: true
+
+#
+# This works instead.
+#
+  jmx.exposure.include:
+    - info
+    - health
+    - metrics
+  web.exposure.include:
+    - info
+    - health
+    - metrics
