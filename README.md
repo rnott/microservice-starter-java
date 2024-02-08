@@ -1,5 +1,9 @@
 # Microservice Starter for Java
 !!! This is a Work In Progress and not yet suitable for production use !!!
+While the service template if fully functional, the Maven archetype is not due to lack of required plugin support. 
+* Further investigate the use of https://www.mojohaus.org/xml-maven-plugin/examples/transform-change-regexp.html
+* Investigate the use of gradle and plugin https://github.com/neva-dev/gradle-fork-plugin
+
 
 This project provides an archetypal and opinionated approach to Java/Sptring based microservice development 
 including best practices, useful features, a modern technology stack and starters (or stubs) for implementing 
