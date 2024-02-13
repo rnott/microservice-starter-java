@@ -371,8 +371,8 @@
     <module>api</module>
     <module>service</module>
     <!--
-    <module>acceptance</module>
-    <module>container</module>
+      NOTE: the testing module is expected to be used outside the build
+      process
     -->
   </modules>
 

@@ -23,3 +23,8 @@ management.endpoints:
     - info
     - health
     - metrics
+
+#
+# configuration that depends on the runtime environment should be configured via the
+# environment or command line arguments. See https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables
+#
