@@ -369,7 +369,7 @@
 
   <modules>
     <module>api</module>
-    <module>service</module>
+    <module>impl</module>
     <!--
       NOTE: the testing module is expected to be used outside the build
       process
