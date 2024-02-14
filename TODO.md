@@ -9,15 +9,18 @@ to ask maintainers to port the working service to the format and structure requi
 by the archetype plugin (think text replacement). Maven does not offer the tooling
 to do this easily.
 
-## Observability
-Integrate OpenTelemetry
-
 ## Gradle Archetype
 Gradle is both popular and MAY offer a solution to the problems with the Maven based
 approach.
 
 ## Transactional Service Tier
 Currently, the protocol and service tiers are flattened into one. 
+
+## Observability
+Integrate OpenTelemetry
+
+## Idempotency
+Promote this style (maybe remove the POST?)
 
 ## AuthN
 Integrate Spring Security. This has been deferred as I'm experimenting with containerization
