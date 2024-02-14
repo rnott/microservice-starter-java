@@ -9,6 +9,9 @@ to ask maintainers to port the working service to the format and structure requi
 by the archetype plugin (think text replacement). Maven does not offer the tooling
 to do this easily.
 
+## Observability
+Integrate OpenTelemetry
+
 ## Gradle Archetype
 Gradle is both popular and MAY offer a solution to the problems with the Maven based
 approach.
