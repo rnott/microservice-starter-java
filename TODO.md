@@ -30,3 +30,5 @@ and sidecar patterns where AuthN is moved to a sidecar app.
 The current version used command line options to configure environmental aspects
 (e.g. database, etc). This should be changed to envars.
 
+## Startup Speed
+For ephemeral, auto-scaling runtimes startup spped is a critical concern.
