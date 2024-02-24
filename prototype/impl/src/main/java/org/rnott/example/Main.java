@@ -29,6 +29,7 @@ import org.rnott.example.problems.NotAcceptableExceptionMapper;
 import org.rnott.example.problems.NotAllowedExceptionMapper;
 import org.rnott.example.problems.NotAuthorizedExceptionMapper;
 import org.rnott.example.problems.NotFoundExceptionMapper;
+import org.rnott.example.problems.JakartaNotFoundExceptionMapper;
 import org.rnott.example.problems.NotSupportedExceptionMapper;
 import org.rnott.example.problems.ObjectOptimisticLockingFailureExceptionMapper;
 import org.rnott.example.problems.ServiceUnavailableExceptionMapper;
@@ -55,7 +56,8 @@ public class Main  extends SpringBootServletInitializer {
 		return new ResourceConfig()
 				// register resource classes here
 				.register( ExampleApiImpl.class )
-
+				// hypermedia support (HATEOS)
+				.register(HypermediaProvider.class)
 				// register provided exception handlers here
 				.register( BadRequestExceptionMapper.class )
 				.register( ConstraintViolationExceptionMapper.class )
@@ -66,6 +68,7 @@ public class Main  extends SpringBootServletInitializer {
 				.register( NotAllowedExceptionMapper.class )
 				.register( NotAuthorizedExceptionMapper.class )
 				.register( NotFoundExceptionMapper.class )
+				.register(JakartaNotFoundExceptionMapper.class)
 				.register( NotSupportedExceptionMapper.class )
 				.register(ServiceUnavailableExceptionMapper.class)
 				.register(ObjectOptimisticLockingFailureExceptionMapper.class)
