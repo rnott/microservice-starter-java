@@ -56,8 +56,6 @@ public class Main  extends SpringBootServletInitializer {
 		return new ResourceConfig()
 				// register resource classes here
 				.register( ExampleApiImpl.class )
-				// hypermedia support (HATEOS)
-				.register(HypermediaProvider.class)
 				// register provided exception handlers here
 				.register( BadRequestExceptionMapper.class )
 				.register( ConstraintViolationExceptionMapper.class )
