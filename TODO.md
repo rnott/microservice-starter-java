@@ -32,3 +32,10 @@ The current version used command line options to configure environmental aspects
 
 ## Startup Speed
 For ephemeral, auto-scaling runtimes startup spped is a critical concern.
+
+## HATEOAS
+Use filters to support hypermedia links.
+
+## Cache Control
+Use filters and features to implement cache control.
+
