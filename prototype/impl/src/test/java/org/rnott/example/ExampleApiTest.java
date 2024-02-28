@@ -111,10 +111,10 @@ class ExampleApiTest {
                 .when()
                 .get("/examples");
         assert response.statusCode() == 200;
-        PageOfExamples result = response.as(PageOfExamples.class);
-        assert result != null;
-        assert result.getTotalCount() == 2;
-        List<Example> data = result.getData();
+        String hdr = response.header("X-Total-Count");
+        assert hdr != null;
+        assert Integer.parseInt(hdr) == 2;
+        List<Example> data = response.as(new TypeRef<List<Example>>() {});
         assert data != null;
         assert data.size() == 2;
         assert "foo".equals(data.get(0).getName());

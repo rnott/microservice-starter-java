@@ -86,6 +86,7 @@
                 <generateApiTests>false</generateApiTests>
                 <generateModelTests>false</generateModelTests>
                 <generateApiDocumentation>true</generateApiDocumentation>
+                <returnResponse>true</returnResponse>
               </configOptions>
             </configuration>
           </execution>

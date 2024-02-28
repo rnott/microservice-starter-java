@@ -2,13 +2,13 @@ package org.rnott.example;
 
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.rnott.example.api.Example;
 import org.rnott.example.api.ExampleApi;
-import org.rnott.example.api.PageOfExamples;
 import org.rnott.example.api.PatchDocument;
 import org.rnott.example.persistence.ExampleEntity;
 import org.rnott.example.persistence.ExampleMapper;
@@ -27,7 +27,6 @@ public class ExampleApiImpl extends Application implements ExampleApi {
 
     @Context
     private UriInfo uriInfo;
-
     @Autowired
     private SearchFactory searchFactory;
 
@@ -40,53 +39,61 @@ public class ExampleApiImpl extends Application implements ExampleApi {
     }
 
     @Override
-    public void clearTags(UUID id) {
+    public Response clearTags(UUID id) {
         ExampleEntity entity = repository.findByIdWithTags(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         entity.getTags().clear();
         repository.save(entity);
+        return Response.noContent().build();
     }
 
     @Override
-    public Example create(Example example) {
+    public Response create(Example example) {
         ExampleEntity entity = ExampleMapper.INSTANCE.toEntity(example);
-        return ExampleMapper.INSTANCE.toApi(
-                repository.save(entity)
-        );
+        return Response.ok(
+            ExampleMapper.INSTANCE.toApi(repository.save(entity))
+        ).build();
     }
 
     @Override
-    public void delete(UUID id) {
+    public Response delete(UUID id) {
         // SD fails silently if entity does not exist (this is good)
         repository.deleteById(id);
+        return Response.noContent().build();
     }
 
     @Override
-    public Example fetch(UUID id) {
+    public Response fetch(UUID id) {
         ExampleEntity entity = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
-        return ExampleMapper.INSTANCE.toApi(entity);
+        return Response.ok(
+                ExampleMapper.INSTANCE.toApi(entity)
+        ).build();
     }
 
     @Override
-    public String fetchSingleTag(UUID id, String name) {
+    public Response fetchSingleTag(UUID id, String name) {
         ExampleEntity entity = repository.findByIdWithTags(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         if (entity.getTags().containsKey(name)) {
-            return entity.getTags().get(name);
+            return Response.ok(
+                    entity.getTags().get(name)
+            ).build();
         }
         throw new NotFoundException( String.format("nane: %s", name));
     }
 
     @Override
-    public Map<String, String> fetchTags(UUID id) {
+    public Response fetchTags(UUID id) {
         ExampleEntity entity = repository.findByIdWithTags(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
-        return entity.getTags();
+        return Response.ok(
+                entity.getTags()
+        ).build();
     }
 
     @Override
-    public Example patch(UUID id, List<PatchDocument> patchDocument) {
+    public Response patch(UUID id, List<PatchDocument> patchDocument) {
         ExampleEntity entity = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         // TODO: implement patch
@@ -94,33 +101,36 @@ public class ExampleApiImpl extends Application implements ExampleApi {
     }
 
     @Override
-    public void removeSingleTag(UUID id, String name) {
+    public Response removeSingleTag(UUID id, String name) {
         ExampleEntity entity = repository.findByIdWithTags(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         var tags = entity.getTags();
                 tags.remove(name);
         repository.save(entity);
+        return Response.noContent().build();
     }
 
     @Override
-    public void replaceSingleTag(UUID id, String name, String value) {
+    public Response replaceSingleTag(UUID id, String name, String value) {
         ExampleEntity entity = repository.findByIdWithTags(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         entity.getTags().put(name, value);
         repository.save(entity);
+        return Response.noContent().build();
     }
 
     @Override
-    public void replaceTags(UUID id, Map<String, String> tags) {
+    public Response replaceTags(UUID id, Map<String, String> tags) {
         ExampleEntity entity = repository.findByIdWithTags(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         entity.getTags().clear();
         entity.getTags().putAll(tags);
        repository.save(entity);
+        return Response.noContent().build();
     }
 
     @Override
-    public PageOfExamples search(
+    public Response search(
             List<UUID> id,
             Boolean deleted,
             Integer page,
@@ -155,11 +165,21 @@ public class ExampleApiImpl extends Application implements ExampleApi {
             }
         }
         Page<ExampleEntity> collection = repository.search(criteria.build(), paging);
-        return ExampleMapper.INSTANCE.toPage(collection);
+
+        return Response.ok(
+                    collection.stream()
+                            .map(e -> ExampleMapper.INSTANCE.toApi(e))
+                            .toList()
+                )
+                .header(
+                    "X-Total-Count",
+                    collection.getNumberOfElements()
+                )
+                .build();
     }
 
     @Override
-    public Example update(UUID id, Example example) {
+    public Response update(UUID id, Example example) {
         if (! id.equals(example.getId())) {
             throw new IllegalArgumentException("Identifier in the payload differs from the one in the path");
         }
@@ -170,7 +190,9 @@ public class ExampleApiImpl extends Application implements ExampleApi {
             ExampleEntity entity = ExampleMapper.INSTANCE.toEntity(example);
             ExampleMapper.INSTANCE.mergeMetadata(current, entity);
             ExampleEntity result = repository.save(entity);
-            return ExampleMapper.INSTANCE.toApi(result);
+            return Response.ok(
+                    ExampleMapper.INSTANCE.toApi(result)
+            ).build();
         } catch (NotFoundException e) {
             // create it
             return create(example);
