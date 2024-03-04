@@ -16,19 +16,12 @@ approach.
 ## Transactional Service Tier
 Currently, the protocol and service tiers are flattened into one. 
 
-## Observability
-Integrate OpenTelemetry
-
 ## Idempotency
 Promote this style (maybe remove the POST?)
 
 ## AuthN
 Integrate Spring Security. This has been deferred as I'm experimenting with containerization
 and sidecar patterns where AuthN is moved to a sidecar app.
-
-## Configuration
-The current version used command line options to configure environmental aspects
-(e.g. database, etc). This should be changed to envars.
 
 ## Startup Speed
 For ephemeral, auto-scaling runtimes startup spped is a critical concern.

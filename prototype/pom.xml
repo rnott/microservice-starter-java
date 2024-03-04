@@ -47,10 +47,11 @@
     <restassured.version>5.4.0</restassured.version>
     <lombok.version>1.18.30</lombok.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
-    <slf4j-api.version>2.0.11</slf4j-api.version>
     <postgresql.version>42.7.1</postgresql.version>
     <!-- this needs to be kept in sync with hibernate version from spring data -->
     <hibernate-jpamodelgen.version>5.4.10.Final</hibernate-jpamodelgen.version>
+    <otel-sdk.version>1.35.0</otel-sdk.version>
+    <otel-instrumentation.version>2.1.0-alpha</otel-instrumentation.version>
   </properties>
 
   <dependencyManagement>
@@ -97,11 +98,6 @@
         <version>${mapstruct.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j-api.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>${postgresql.version}</version>
@@ -111,6 +107,21 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-jpamodelgen</artifactId>
         <version>${hibernate-jpamodelgen.version}</version>
+      </dependency>
+      <!-- telemetry -->
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-bom</artifactId>
+        <version>${otel-sdk.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.opentelemetry.instrumentation</groupId>
+        <artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
+        <version>${otel-instrumentation.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

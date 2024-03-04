@@ -3,6 +3,11 @@
 #
 
 #
+# Inject MDC info into log entries
+#
+logging.pattern.level: trace_id=%mdc{trace_id} span_id=%mdc{span_id} trace_flags=%mdc{trace_flags} %5p
+
+#
 # Opt-in to actuator endpoints. This doesn't appear to work
 # despite the documentation to the contrary.
 #
@@ -24,6 +29,10 @@ management.endpoint:
     - info
     - health
     - metrics
+
+spring:
+  application:
+    name: Example Service
 
 #
 # configuration that depends on the runtime environment should be configured via the

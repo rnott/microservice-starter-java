@@ -83,6 +83,7 @@ public interface AbstractEntityMapper <A, PA extends PageOfExamples, E extends A
     @AfterMapping
     default void calculatePage(Page<ExampleEntity> source, @MappingTarget PA page) {
         // SpringData pages start at zero, should start at 1
-        page.currentPage(page.getCurrentPage() + 1);
+        page.currentPage(source.getNumber() + 1)
+                .lastPage(source.getTotalPages() + 1);
     }
 }

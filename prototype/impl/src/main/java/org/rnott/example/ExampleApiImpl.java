@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.rnott.example.api.Example;
 import org.rnott.example.api.ExampleApi;
 import org.rnott.example.api.PageOfExamples;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class ExampleApiImpl extends Application implements ExampleApi {
 
     @Context
@@ -128,6 +130,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
             List<String> sort,
             String name
     ) {
+        log.info("Search request: page={}, limit={}", page, limit);
         SearchCriteria.Builder<ExampleEntity> criteria = searchFactory.searchCriteriaBuilderFor(ExampleEntity.class);
         // common parameters
         if (deleted != null) {
