@@ -11,6 +11,7 @@ import org.rnott.example.api.Example;
 import org.rnott.example.api.ExampleApi;
 import org.rnott.example.api.PageOfExamples;
 import org.rnott.example.api.PatchRequest;
+import org.rnott.example.feature.Expires;
 import org.rnott.example.persistence.ExampleEntity;
 import org.rnott.example.persistence.ExampleMapper;
 import org.rnott.example.persistence.ExampleRepository;
@@ -122,6 +123,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
     }
 
     @Override
+    @Expires("pt5m0s")  // expire the cached result after 5 minutes
     public PageOfExamples search(
             List<UUID> id,
             Boolean deleted,

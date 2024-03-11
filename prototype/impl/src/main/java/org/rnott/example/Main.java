@@ -17,6 +17,7 @@
 package org.rnott.example;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.rnott.example.feature.HttpCacheFeature;
 import org.rnott.example.persistence.NoResultExceptionMapper;
 import org.rnott.example.problems.BadRequestExceptionMapper;
 import org.rnott.example.problems.ConstraintViolationExceptionMapper;
@@ -56,6 +57,8 @@ public class Main  extends SpringBootServletInitializer {
 		return new ResourceConfig()
 				// register resource classes here
 				.register( ExampleApiImpl.class )
+				// register features here
+				.register(HttpCacheFeature.class)
 				// register provided exception handlers here
 				.register( BadRequestExceptionMapper.class )
 				.register( ConstraintViolationExceptionMapper.class )
