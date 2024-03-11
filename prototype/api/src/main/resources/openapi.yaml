@@ -675,7 +675,7 @@ components:
     #
     Example:
       description: An example service entity which is the focus of one or more API methods
-      anyOf:
+      allOf:
         - $ref: '#/components/schemas/ServiceEntity'
         - type: object
           required:

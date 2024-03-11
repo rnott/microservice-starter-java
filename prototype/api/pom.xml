@@ -70,6 +70,10 @@
               <generatorName>jaxrs-spec</generatorName>
               <apiPackage>org.rnott.example.api</apiPackage>
               <modelPackage>org.rnott.example.api</modelPackage>
+              <generateAliasAsModel>true</generateAliasAsModel>
+              <additionalProperties>true</additionalProperties>
+              <!-- enable inheritance -->
+              <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
               <configOptions>
                 <!-- Jakarta is required by SpringBoot v3 -->
                 <useJakartaEe>true</useJakartaEe>
