@@ -138,9 +138,9 @@ class ExampleApiTest {
     void serviceShouldAllowCreationOfNewEntityInstances() {
 
         UUID id = UUID.randomUUID();
-        Example source = new Example()
-                .id(id)
-                .name("foo")
+        Example source = new Example();
+        source.id(id);
+        source.name("foo")
                 .description("An example");
         var response = given()
                 .contentType(ContentType.JSON).body(source)
@@ -212,10 +212,11 @@ class ExampleApiTest {
                         .build()
         );
 
+        var example = new Example();
+        example.id(id);
         var response = given()
                 .contentType(ContentType.JSON)
-                .body(new Example()
-                        .id(id)
+                .body(example
                         .name(source.getName())
                         .description("updated example")
                         .version(99L)
@@ -245,9 +246,9 @@ class ExampleApiTest {
     @Test
     void serviceShouldAllowDeletingAnInstanceByIdentity() {
         UUID id = UUID.randomUUID();
-        Example source = new Example()
-                .id(id)
-                .name("foo")
+        Example source = new Example();
+        source.id(id);
+        source.name("foo")
                 .description("An example");
         var response = given()
                 .contentType(ContentType.JSON).body(source)
@@ -368,11 +369,11 @@ class ExampleApiTest {
                         .build()
         );
 
+        var example = new Example();
+        example.id(source.getId());
         var response = given()
                 .contentType(ContentType.JSON)
-                .body(new Example()
-                        .id(source.getId())
-                        .name(source.getName())
+                .body(example.name(source.getName())
                         .description("updated example")
                         .version(0L)
                 )
@@ -398,9 +399,9 @@ class ExampleApiTest {
 
         // provided
         UUID id = UUID.randomUUID();
-        source = new Example()
-                .id(id)
-                .name("foo")
+        source = new Example();
+        source.id(id);
+        source.name("foo")
                 .description("An example");
         response = given()
                 .contentType(ContentType.JSON).body(source)
@@ -415,9 +416,9 @@ class ExampleApiTest {
     void serviceMethodsAreIdempotent() {
         // use PUT to create
         UUID id = UUID.randomUUID();
-        Example source = new Example()
-                .id(id)
-                .name("foo")
+        Example source = new Example();
+        source.id(id);
+        source.name("foo")
                 .description("An example");
         var response = given()
                 .contentType(ContentType.JSON).body(source)

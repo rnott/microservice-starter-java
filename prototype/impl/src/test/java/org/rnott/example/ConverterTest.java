@@ -50,9 +50,9 @@ public class ConverterTest {
 
     @Test
     void apiTypeCanBeConvertedToServiceType() {
-        Example example = new Example()
-                .id(UUID.randomUUID())
-                .name("foo")
+        Example example = new Example();
+        example.id(UUID.randomUUID());
+        example.name("foo")
                 .description("sample")
                 .state(EntityState.DISABLED)
                 .version(99L)
