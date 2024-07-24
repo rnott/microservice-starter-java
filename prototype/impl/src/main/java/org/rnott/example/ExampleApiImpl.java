@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.rnott.example.api.Example;
 import org.rnott.example.api.ExampleApi;
 import org.rnott.example.api.PageOfExamples;
-import org.rnott.example.api.PatchRequest;
+import org.rnott.example.api.PatchDocument;
 import org.rnott.example.feature.Expires;
 import org.rnott.example.persistence.ExampleEntity;
 import org.rnott.example.persistence.ExampleMapper;
@@ -90,7 +90,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
     }
 
     @Override
-    public Example patch(UUID id,  PatchRequest patchRequest) {
+    public Example patch(UUID id,  List<PatchDocument> patchDocuments) {
         ExampleEntity entity = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         // TODO: implement patch
