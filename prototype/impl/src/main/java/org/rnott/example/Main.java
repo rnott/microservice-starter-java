@@ -24,13 +24,13 @@ import org.rnott.example.problems.ConstraintViolationExceptionMapper;
 import org.rnott.example.problems.DefaultExceptionMapper;
 import org.rnott.example.problems.ForbiddenExceptionMapper;
 import org.rnott.example.problems.InternalServerErrorExceptionMapper;
+import org.rnott.example.problems.JakartaNotFoundExceptionMapper;
 import org.rnott.example.problems.JsonMappingExceptionMapper;
 import org.rnott.example.problems.JsonParseExceptionMapper;
 import org.rnott.example.problems.NotAcceptableExceptionMapper;
 import org.rnott.example.problems.NotAllowedExceptionMapper;
 import org.rnott.example.problems.NotAuthorizedExceptionMapper;
 import org.rnott.example.problems.NotFoundExceptionMapper;
-import org.rnott.example.problems.JakartaNotFoundExceptionMapper;
 import org.rnott.example.problems.NotSupportedExceptionMapper;
 import org.rnott.example.problems.ObjectOptimisticLockingFailureExceptionMapper;
 import org.rnott.example.problems.ServiceUnavailableExceptionMapper;
@@ -45,50 +45,52 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan
 @SpringBootApplication
-public class Main  extends SpringBootServletInitializer {
+public class Main extends SpringBootServletInitializer {
 
-	/**
-	 * Register JAX-RS resources.
-	 * <p>
-	 * @return JAX-RS resource configuration.
-	 */
-	@Bean
-	public ResourceConfig configureResources() {
-		return new ResourceConfig()
-				// register resource classes here
-				.register( ExampleApiImpl.class )
-				// register features here
-				.register(HttpCacheFeature.class)
-				// register provided exception handlers here
-				.register( BadRequestExceptionMapper.class )
-				.register( ConstraintViolationExceptionMapper.class )
-				.register( DefaultExceptionMapper.class )
-				.register( ForbiddenExceptionMapper.class )
-				.register(InternalServerErrorExceptionMapper.class)
-				.register( NotAcceptableExceptionMapper.class )
-				.register( NotAllowedExceptionMapper.class )
-				.register( NotAuthorizedExceptionMapper.class )
-				.register( NotFoundExceptionMapper.class )
-				.register(JakartaNotFoundExceptionMapper.class)
-				.register( NotSupportedExceptionMapper.class )
-				.register(ServiceUnavailableExceptionMapper.class)
-				.register(ObjectOptimisticLockingFailureExceptionMapper.class)
-				// should only be registered if JPA is used
-				.register( NoResultExceptionMapper.class )
-				.register(JsonParseExceptionMapper.class)
-				.register(JsonMappingExceptionMapper.class)
-				.register(ValidationExceptionMapper.class);
-				// TODO: register any application exception handlers here
-	}
+    /**
+     * Register JAX-RS resources.
+     * <p>
+     *
+     * @return JAX-RS resource configuration.
+     */
+    @Bean
+    public ResourceConfig configureResources() {
+        return new ResourceConfig()
+                // register resource classes here
+                .register(ExampleApiImpl.class)
+                // register features here
+                .register(HttpCacheFeature.class)
+                // register provided exception handlers here
+                .register(BadRequestExceptionMapper.class)
+                .register(ConstraintViolationExceptionMapper.class)
+                .register(DefaultExceptionMapper.class)
+                .register(ForbiddenExceptionMapper.class)
+                .register(InternalServerErrorExceptionMapper.class)
+                .register(NotAcceptableExceptionMapper.class)
+                .register(NotAllowedExceptionMapper.class)
+                .register(NotAuthorizedExceptionMapper.class)
+                .register(NotFoundExceptionMapper.class)
+                .register(JakartaNotFoundExceptionMapper.class)
+                .register(NotSupportedExceptionMapper.class)
+                .register(ServiceUnavailableExceptionMapper.class)
+                .register(ObjectOptimisticLockingFailureExceptionMapper.class)
+                // should only be registered if JPA is used
+                .register(NoResultExceptionMapper.class)
+                .register(JsonParseExceptionMapper.class)
+                .register(JsonMappingExceptionMapper.class)
+                .register(ValidationExceptionMapper.class);
+        // TODO: register any application exception handlers here
+    }
 
     /**
      * Application entry point.
      * <p>
+     *
      * @param args command line arguments to apply.
      */
-    public static void main( String [] args ) {
-		new Main()
-			.configure( new SpringApplicationBuilder( Main.class ) )
-			.run( args );
-	}
+    public static void main(String[] args) {
+        new Main()
+                .configure(new SpringApplicationBuilder(Main.class))
+                .run(args);
+    }
 }

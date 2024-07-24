@@ -27,7 +27,8 @@ import org.rnott.example.api.ServiceEntity;
 @Provider
 public class HttpCacheFeature implements DynamicFeature {
 
-    static final DateTimeFormatter HTTP_TIME = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+    static final DateTimeFormatter HTTP_TIME = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z",
+            Locale.ENGLISH);
 
     static String toHttp(OffsetDateTime dt) {
         return dt.atZoneSameInstant(ZoneId.of("GMT"))
@@ -37,7 +38,8 @@ public class HttpCacheFeature implements DynamicFeature {
     static class GeneralFilter implements ContainerResponseFilter {
 
         @Override
-        public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
+                throws IOException {
             EntityTag tag = null;
             if (responseContext.getStatus() >= 300) {
                 // no change on error
@@ -79,12 +81,12 @@ public class HttpCacheFeature implements DynamicFeature {
             if (tag != null) {
                 responseContext.getHeaders().add("Etag", tag);
             }
-         }
+        }
     }
 
     /**
      * Resource filter to apply cache control headers to a response.
-     *
+     * <p>
      * NOTE: this class in not annotated with <code>@Provider</code> as it will be enabled on
      * a method by method basis by the corresponding feature type.
      *
@@ -146,7 +148,7 @@ public class HttpCacheFeature implements DynamicFeature {
             ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("GMT")).plus(d);
             headers.put("expires", zdt.format(HTTP_TIME));
         }
-        if (! headers.isEmpty()) {
+        if (!headers.isEmpty()) {
             DynamicFilter filter = new DynamicFilter(headers);
             featureContext.register(filter);
         }

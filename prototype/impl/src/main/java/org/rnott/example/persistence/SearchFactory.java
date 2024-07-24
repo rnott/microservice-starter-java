@@ -13,7 +13,7 @@ public class SearchFactory {
     private EntityManager em;
 
     @Transactional(TxType.SUPPORTS)
-    public  <T extends AbstractEntity> Builder<T> searchCriteriaBuilderFor(Class<T> clazz) {
+    public <T extends AbstractEntity> Builder<T> searchCriteriaBuilderFor(Class<T> clazz) {
         return new SearchCriteria.Builder<>(em, clazz);
     }
 }

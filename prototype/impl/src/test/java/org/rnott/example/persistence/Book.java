@@ -8,12 +8,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +25,9 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
 import org.rnott.example.api.EntityState;
 
-@NoArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "books")
 public class Book extends AbstractEntity {
@@ -41,10 +41,10 @@ public class Book extends AbstractEntity {
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumnsOrFormulas({
-            @JoinColumnOrFormula(column = @JoinColumn(name="author_id", referencedColumnName = "id")),
+            @JoinColumnOrFormula(column = @JoinColumn(name = "author_id", referencedColumnName = "id")),
             @JoinColumnOrFormula(formula = @JoinFormula(value = "false", referencedColumnName = "deleted"))
     })
-private Author author;
+    private Author author;
 
     @ManyToMany
     @JoinTable(
@@ -60,6 +60,7 @@ private Author author;
             Author author, @Singular List<Category> categories) {
         this(EntityState.ACTIVE, new LinkedHashMap<>(), title, publishedDate, author, categories);
     }
+
     @Builder
     public Book(EntityState state, Map<String, String> tags, String title, LocalDate publishedDate,
             Author author, @Singular List<Category> categories) {

@@ -30,6 +30,7 @@ public class ApplicationConfiguration {
     public Jdk8Module jdk8Module() {
         return new Jdk8Module();
     }
+
     /**
      * Enable JDK 8 date/time support.
      *

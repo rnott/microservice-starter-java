@@ -18,9 +18,9 @@ management.endpoint:
   health.enabled: true
   metrics.enabled: true
 
-#
-# This works instead.
-#
+  #
+  # This works instead.
+  #
   jmx.exposure.include:
     - info
     - health

@@ -28,9 +28,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * Test the features of the {@link AbstractEntityRepository}. Only the
  * features that have been added or overridden are tested, assuming
  * upstream (Spring Data) features work as advertised.
- *
+ * <p>
  * There are separate test suites to test the soft-delete and search features
  * in detail.
+ *
  * @see SoftDeleteTest
  * @see SearchTest
  */
@@ -43,6 +44,7 @@ class RepositoryTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     ).withInitScript("test-data.sql");
+
     @DynamicPropertySource
     static void setDatasourceProperties(DynamicPropertyRegistry propertyRegistry) {
         propertyRegistry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -61,7 +63,6 @@ class RepositoryTest {
     private final List<Book> savedBooks = new LinkedList<>();
     private final List<Category> savedCategories = new LinkedList<>();
 
-
     @Autowired
     private TestEntityManager entityManager;
 
@@ -69,6 +70,7 @@ class RepositoryTest {
     static void init() {
         postgres.start();
     }
+
     @AfterAll
     static void shutdown() {
         postgres.stop();
@@ -79,7 +81,7 @@ class RepositoryTest {
     @BeforeEach
     void setup() {
         List<Author> authors = List.of(
-                new Author("Dan","Brown", LocalDate.of(1964, 6, 22)),
+                new Author("Dan", "Brown", LocalDate.of(1964, 6, 22)),
                 new Author("J.K.", "Rowling", LocalDate.of(1965, 7, 31))
         );
         for (Author a : authors) {
@@ -173,7 +175,7 @@ class RepositoryTest {
             assert exists;
 
             exists = categoryRepository.existsById(UUID.randomUUID());
-            assert ! exists;
+            assert !exists;
         }
 
         List<UUID> ids = all.stream()
@@ -196,7 +198,7 @@ class RepositoryTest {
         assert category != null;
         assert category.getId() != null;
         assert "foo".equals(category.getName());
-        assert ! category.isDeleted();
+        assert !category.isDeleted();
         assert category.getVersion() == 0;
         assert category.getCreated() != null;
         assert category.getCreatedBy() != null;
@@ -205,6 +207,7 @@ class RepositoryTest {
         assert category.getCreated().equals(category.getModified());
         assert category.getCreatedBy().equals(category.getModifiedBy());
     }
+
     @Test
     void canManageEntityTags() {
         UUID id = categoryRepository.findAll().stream()
@@ -244,7 +247,7 @@ class RepositoryTest {
                 .orElseThrow(() -> new IllegalStateException("id not found"));
         assert category.getTags() != null;
         assert category.getTags().size() == 2;
-        assert ! category.getTags().containsKey("important");
+        assert !category.getTags().containsKey("important");
 
         category.getTags().clear();
         categoryRepository.saveAndFlush(category);

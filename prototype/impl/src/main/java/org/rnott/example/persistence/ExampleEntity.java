@@ -16,9 +16,12 @@ import org.rnott.example.api.EntityState;
 
 @Entity
 @Table(name = "examples")
-@NoArgsConstructor @Getter @Setter
-public class  ExampleEntity extends AbstractEntity {
-    @Column(nullable = false) @NotNull
+@NoArgsConstructor
+@Getter
+@Setter
+public class ExampleEntity extends AbstractEntity {
+    @Column(nullable = false)
+    @NotNull
     private String name;
 
     @Column

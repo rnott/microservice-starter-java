@@ -28,12 +28,12 @@ import org.springframework.stereotype.Component;
  */
 @Provider
 @Component
-public class NoResultExceptionMapper  extends ProblemDetailsMapper<NoResultException> {
+public class NoResultExceptionMapper extends ProblemDetailsMapper<NoResultException> {
 
-	/**
-	 * Default constructor.
-	 */
+    /**
+     * Default constructor.
+     */
     public NoResultExceptionMapper() {
-		super( NOT_FOUND );
-	}
+        super(NOT_FOUND);
+    }
 }

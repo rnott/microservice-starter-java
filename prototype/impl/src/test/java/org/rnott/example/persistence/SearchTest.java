@@ -32,6 +32,7 @@ class SearchTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     ).withInitScript("test-data.sql");
+
     @DynamicPropertySource
     static void setDatasourceProperties(DynamicPropertyRegistry propertyRegistry) {
         propertyRegistry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -57,18 +58,18 @@ class SearchTest {
     static void init() {
         postgres.start();
     }
+
     @AfterAll
     static void shutdown() {
         postgres.stop();
         postgres.close();
     }
 
-
     @Sql("truncate_tables.sql")
     @BeforeEach
     void setup() {
         List<Author> authors = List.of(
-                new Author("Dan","Brown", LocalDate.of(1964, 6, 22)),
+                new Author("Dan", "Brown", LocalDate.of(1964, 6, 22)),
                 new Author("J.K.", "Rowling", LocalDate.of(1965, 7, 31))
         );
         savedAuthors.addAll(authorRepository.saveAll(authors));
@@ -119,7 +120,7 @@ class SearchTest {
     }
 
     @Test
-    void  searchCanFilterUsingExactMatching() {
+    void searchCanFilterUsingExactMatching() {
         // expect matches
         SearchCriteria<Author> criteria = searchFactory.searchCriteriaBuilderFor(Author.class)
                 .exactMatch("lastName", "Brown")
@@ -260,14 +261,14 @@ class SearchTest {
             assert results.getTotalElements() == 103;
             assert results.stream().toList().size() == (results.isLast() ? 3 : 25);
             paging = results.nextPageable();
-        } while (! results.isLast());
+        } while (!results.isLast());
         assert pages == 5;
     }
 
-   @Test
+    @Test
     void resultsCanBeSorted() {
         // descending
-       List<String> sort = List.of("-lastName");
+        List<String> sort = List.of("-lastName");
         SearchCriteria<Author> criteria = searchFactory.searchCriteriaBuilderFor(Author.class)
                 .orderAs(sort)
                 .build();
@@ -278,26 +279,26 @@ class SearchTest {
         assert "Brown".equals(results.get(1).getLastName());
 
         // ascending
-       sort = List.of("+lastName");
-       criteria = searchFactory.searchCriteriaBuilderFor(Author.class)
-               .orderAs(sort)
-               .build();
-       page = authorRepository.search(criteria);
-       results = page.getContent();
-       assert results.size() == 2;
-       assert "Brown".equals(results.get(0).getLastName());
-       assert "Rowling".equals(results.get(1).getLastName());
+        sort = List.of("+lastName");
+        criteria = searchFactory.searchCriteriaBuilderFor(Author.class)
+                .orderAs(sort)
+                .build();
+        page = authorRepository.search(criteria);
+        results = page.getContent();
+        assert results.size() == 2;
+        assert "Brown".equals(results.get(0).getLastName());
+        assert "Rowling".equals(results.get(1).getLastName());
 
-       // default (ascending)
-       sort = List.of("lastName");
-       criteria = searchFactory.searchCriteriaBuilderFor(Author.class)
-               .orderAs(sort)
-               .build();
-       page = authorRepository.search(criteria);
-       results = page.getContent();
-       assert results.size() == 2;
-       assert "Brown".equals(results.get(0).getLastName());
-       assert "Rowling".equals(results.get(1).getLastName());
+        // default (ascending)
+        sort = List.of("lastName");
+        criteria = searchFactory.searchCriteriaBuilderFor(Author.class)
+                .orderAs(sort)
+                .build();
+        page = authorRepository.search(criteria);
+        results = page.getContent();
+        assert results.size() == 2;
+        assert "Brown".equals(results.get(0).getLastName());
+        assert "Rowling".equals(results.get(1).getLastName());
     }
 
     @Test
@@ -337,7 +338,7 @@ class SearchTest {
                 .orElseThrow(() -> new IllegalStateException("category not found"));
         c.getTags().put("important", "");
         c.getTags().put("rating", "3.9");
-        c.getTags().put("classification","classic");
+        c.getTags().put("classification", "classic");
         categoryRepository.save(c);
 
         Page<Category> page = categoryRepository.search(

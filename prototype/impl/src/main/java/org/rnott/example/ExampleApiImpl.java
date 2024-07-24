@@ -1,6 +1,5 @@
 package org.rnott.example;
 
-import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
@@ -79,7 +78,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
         if (entity.getTags().containsKey(name)) {
             return entity.getTags().get(name);
         }
-        throw new NotFoundException( String.format("nane: %s", name));
+        throw new NotFoundException(String.format("nane: %s", name));
     }
 
     @Override
@@ -90,7 +89,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
     }
 
     @Override
-    public Example patch(UUID id,  List<PatchDocument> patchDocuments) {
+    public Example patch(UUID id, List<PatchDocument> patchDocuments) {
         ExampleEntity entity = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         // TODO: implement patch
@@ -102,7 +101,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
         ExampleEntity entity = repository.findByIdWithTags(id)
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         var tags = entity.getTags();
-                tags.remove(name);
+        tags.remove(name);
         repository.save(entity);
     }
 
@@ -120,7 +119,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
                 .orElseThrow(() -> new NotFoundException(String.format("id: %s", id)));
         entity.getTags().clear();
         entity.getTags().putAll(tags);
-       repository.save(entity);
+        repository.save(entity);
     }
 
     @Override
@@ -166,7 +165,7 @@ public class ExampleApiImpl extends Application implements ExampleApi {
 
     @Override
     public Example update(UUID id, Example example) {
-        if (! id.equals(example.getId())) {
+        if (!id.equals(example.getId())) {
             throw new IllegalArgumentException("Identifier in the payload differs from the one in the path");
         }
         // support idempotency

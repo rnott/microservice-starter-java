@@ -9,7 +9,6 @@ import jakarta.persistence.criteria.MapJoin;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.SetJoin;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.Metamodel;
 import java.util.LinkedList;
@@ -19,7 +18,7 @@ import lombok.Getter;
 /**
  * Configure criteria (filters, sorting, etc) to use when searching
  * an entity collection.
- *
+ * <p>
  * Note: two queries are required to support searching:
  * <ol>
  *     <lli>a query to fetch a single page of results</lli>
@@ -33,11 +32,11 @@ import lombok.Getter;
  * @param <T> the entity type
  */
 @Getter
-public class SearchCriteria <T extends AbstractEntity> {
+public class SearchCriteria<T extends AbstractEntity> {
 
     public static final String WILDCARD = "%";
 
-    public static class Builder  <T  extends AbstractEntity> {
+    public static class Builder<T extends AbstractEntity> {
 
         private final EntityManager em;
         private final CriteriaBuilder cb;
@@ -108,13 +107,18 @@ public class SearchCriteria <T extends AbstractEntity> {
             );
             return this;
         }
-        public <V> Builder<T> optionsMatch(String property, V ... values) {
+
+        public <V> Builder<T> optionsMatch(String property, V... values) {
             In<Object> clause = cb.in(resultRoot.get(property));
-            for (Object v : values) clause.value(v);
+            for (Object v : values) {
+                clause.value(v);
+            }
             resultPredicates.add(clause);
 
             clause = cb.in(countRoot.get(property));
-            for (Object v : values) clause.value(v);
+            for (Object v : values) {
+                clause.value(v);
+            }
             countPredicates.add(clause);
             return this;
         }
@@ -128,6 +132,7 @@ public class SearchCriteria <T extends AbstractEntity> {
             );
             return this;
         }
+
         public <V extends Comparable<? super V>> Builder<T> rangeMatch(String property, V floor, V ceiling) {
             resultPredicates.add(
                     cb.between(resultRoot.get(property), floor, ceiling)
@@ -190,11 +195,13 @@ public class SearchCriteria <T extends AbstractEntity> {
             return this;
         }
 
-        public Builder<T> tagOptionsMatch(String key, Object ... values) {
+        public Builder<T> tagOptionsMatch(String key, Object... values) {
             var rTags = getResultTags();
             var cTags = getCountTags();
             In<Object> in = cb.in(rTags.value());
-            for (Object v : values) in.value(v);
+            for (Object v : values) {
+                in.value(v);
+            }
             resultPredicates.add(
                     cb.and(
                             cb.equal(rTags.key(), key),
@@ -202,7 +209,9 @@ public class SearchCriteria <T extends AbstractEntity> {
                     )
             );
             in = cb.in(cTags.value());
-            for (Object v : values) in.value(v);
+            for (Object v : values) {
+                in.value(v);
+            }
             countPredicates.add(
                     cb.and(
                             cb.equal(cTags.key(), key),
@@ -231,24 +240,24 @@ public class SearchCriteria <T extends AbstractEntity> {
             return this;
         }
 
-         public SearchCriteria<T> build() {
+        public SearchCriteria<T> build() {
             // apply deleted item scope
-             exactMatch("deleted", isDeleted);
+            exactMatch("deleted", isDeleted);
 
-             // apply sorting
-             Order [] orders = this.sorting.stream()
-                     .map(s -> {
-                         if (s.startsWith("+")) {
-                             return cb.asc(resultRoot.get(s.substring(1)));
-                         } else if (s.startsWith("-")) {
-                             return cb.desc(resultRoot.get(s.substring(1)));
-                         } else {
-                             return cb.asc(resultRoot.get(s));
-                         }
+            // apply sorting
+            Order[] orders = this.sorting.stream()
+                    .map(s -> {
+                        if (s.startsWith("+")) {
+                            return cb.asc(resultRoot.get(s.substring(1)));
+                        } else if (s.startsWith("-")) {
+                            return cb.desc(resultRoot.get(s.substring(1)));
+                        } else {
+                            return cb.asc(resultRoot.get(s));
+                        }
 
-                     })
-                     .toArray(Order[]::new);
-                resultCriteria.orderBy(orders);
+                    })
+                    .toArray(Order[]::new);
+            resultCriteria.orderBy(orders);
 
             TypedQuery<T> rq = em.createQuery(
                     resultCriteria.where(resultPredicates.toArray(Predicate[]::new))
@@ -260,7 +269,7 @@ public class SearchCriteria <T extends AbstractEntity> {
 
             return new SearchCriteria<>(rq, cq);
         }
-   }
+    }
 
     private final TypedQuery<T> resultsQuery;
     private final TypedQuery<Long> countQuery;

@@ -42,9 +42,9 @@ public class DefaultExceptionMapper extends ProblemDetailsMapper<Throwable> {
     @Context
     private Providers providers;
 
-	/**
-	 * Default constructor.
-	 */
+    /**
+     * Default constructor.
+     */
     public DefaultExceptionMapper() {
         super(Status.INTERNAL_SERVER_ERROR);
     }
@@ -61,6 +61,7 @@ public class DefaultExceptionMapper extends ProblemDetailsMapper<Throwable> {
      * Find the best handler for an exception. It processes the deepest cause mapped
      * to a handler.
      * <p>
+     *
      * @param t - unexpected exception thrown in the code.
      * @return response - the Response sent to the Client.
      */
@@ -80,14 +81,14 @@ public class DefaultExceptionMapper extends ProblemDetailsMapper<Throwable> {
 
         // attempt to handle
         @SuppressWarnings("unchecked")
-        ExceptionMapper<Throwable> mapper = (ExceptionMapper<Throwable>)providers.getExceptionMapper( t.getClass() );
+        ExceptionMapper<Throwable> mapper = (ExceptionMapper<Throwable>) providers.getExceptionMapper(t.getClass());
         if (mapper != null && mapper.getClass() != this.getClass()) {
-                Response r = mapper.toResponse(t);
-                if (r == null) {
-                    return Optional.empty();
-                } else {
-                    return Optional.of(r);
-                }
+            Response r = mapper.toResponse(t);
+            if (r == null) {
+                return Optional.empty();
+            } else {
+                return Optional.of(r);
+            }
         }
 
         // can't handle

@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.rnott.example.api.EntityState;
 
-@NoArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "categories")
 public class Category extends AbstractEntity {

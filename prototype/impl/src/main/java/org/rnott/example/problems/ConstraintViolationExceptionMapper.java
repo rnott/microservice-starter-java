@@ -34,44 +34,44 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConstraintViolationExceptionMapper extends ProblemDetailsMapper<ConstraintViolationException> {
 
-	/**
-	 * Default constructor.
-	 */
-	public ConstraintViolationExceptionMapper() {
-		super( BAD_REQUEST );
-	}
+    /**
+     * Default constructor.
+     */
+    public ConstraintViolationExceptionMapper() {
+        super(BAD_REQUEST);
+    }
 
-	@Override
-	protected ProblemDetails problem( ConstraintViolationException e ) {
-		return super.problem(e)  // let superclass handle the common settings
-				.errors(
-						e.getConstraintViolations().stream()
-								.map(cv -> {
-									return new ErrorItem()
-											.detail(cv.getMessage())
-											.pointer(toJsonPointer(cv.getPropertyPath()))
-											 .extensions(Map.of("value", cv.getInvalidValue()));
-								})
-								.toList()
-				);
-	}
+    @Override
+    protected ProblemDetails problem(ConstraintViolationException e) {
+        return super.problem(e)  // let superclass handle the common settings
+                .errors(
+                        e.getConstraintViolations().stream()
+                                .map(cv -> {
+                                    return new ErrorItem()
+                                            .detail(cv.getMessage())
+                                            .pointer(toJsonPointer(cv.getPropertyPath()))
+                                            .extensions(Map.of("value", cv.getInvalidValue()));
+                                })
+                                .toList()
+                );
+    }
 
-	private String toJsonPointer(Path path) {
-		final StringBuilder pointer = new StringBuilder("#");
-		path.forEach(n -> {
-			if (n.getKind().equals(ElementKind.PROPERTY)) {
-				pointer.append("/").append(n.getName());
-				if (n.isInIterable()) {
-					if (n.getIndex() != null) {
-						// collection index
-						pointer.append("/").append(n.getIndex());
-					} else if (n.getKey() != null) {
-						// map key
-						pointer.append("/").append(n.getKey());
-					}
-				}
-			}
-		});
-		return pointer.toString();
-	}
+    private String toJsonPointer(Path path) {
+        final StringBuilder pointer = new StringBuilder("#");
+        path.forEach(n -> {
+            if (n.getKind().equals(ElementKind.PROPERTY)) {
+                pointer.append("/").append(n.getName());
+                if (n.isInIterable()) {
+                    if (n.getIndex() != null) {
+                        // collection index
+                        pointer.append("/").append(n.getIndex());
+                    } else if (n.getKey() != null) {
+                        // map key
+                        pointer.append("/").append(n.getKey());
+                    }
+                }
+            }
+        });
+        return pointer.toString();
+    }
 }

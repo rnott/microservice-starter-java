@@ -19,9 +19,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.UUID;
-import java.util.spi.TimeZoneNameProvider;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,14 +61,15 @@ public abstract class AbstractEntity implements Serializable {
         this.createdBy = createdBy;
         this.modified = modified;
         this.modifiedBy = modifiedBy;
-        this.version = version == null ? 0: version;
+        this.version = version == null ? 0 : version;
         this.tags = tags;
     }
 
     /**
      * Primary key (e.g. unique identifier).
      */
-    @Id @NotNull
+    @Id
+    @NotNull
     @Column(nullable = false)
     private UUID id;
 
@@ -89,20 +88,24 @@ public abstract class AbstractEntity implements Serializable {
     private boolean deleted;
 
     @ElementCollection
-    @MapKeyColumn(name="key")
+    @MapKeyColumn(name = "key")
     @Column(name = "value")
     private Map<String, String> tags = new LinkedHashMap<>();
 
-    @Column @Setter
+    @Column
+    @Setter
     private OffsetDateTime created;
 
-    @Column @Setter
+    @Column
+    @Setter
     private String createdBy;
 
-    @Column @Setter
+    @Column
+    @Setter
     private OffsetDateTime modified;
 
-    @Column @Setter
+    @Column
+    @Setter
     private String modifiedBy;
 
 
@@ -125,6 +128,7 @@ public abstract class AbstractEntity implements Serializable {
         this.modified = this.created;
         this.modifiedBy = this.createdBy;
     }
+
     @PreUpdate
     void update() {
         this.modified = Instant.now().atOffset(ZoneOffset.UTC);
@@ -144,6 +148,7 @@ public abstract class AbstractEntity implements Serializable {
 
     /**
      * Declared final to prevent accidental loading of lazy attributes.
+     *
      * @see Object#toString()
      */
     @Override
@@ -155,6 +160,7 @@ public abstract class AbstractEntity implements Serializable {
      * Declared final to prevent accidental loading of lazy attributes
      * and to ensure an identity based implementation, as one should expect
      * for persisted entities.
+     *
      * @return a value based on the primary key
      * @see Object#hashCode()
      */

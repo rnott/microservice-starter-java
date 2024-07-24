@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.rnott.example.api.EntityState;
 
-@NoArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "authors")
 public class Author extends AbstractEntity {
@@ -27,6 +29,7 @@ public class Author extends AbstractEntity {
     public Author(String gn, String sn, LocalDate bd) {
         this(gn, sn, bd, EntityState.ACTIVE, new LinkedHashMap<>());
     }
+
     @Builder
     public Author(String gn, String sn, LocalDate bd, EntityState state, Map<String, String> tags) {
         super(null, state, null, null, null, null, null, tags);

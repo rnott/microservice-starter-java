@@ -85,7 +85,7 @@ class ExampleApiTest {
      */
     @AfterEach
     void dbCleanup() {
-        jdbcTemplate.execute("TRUNCATE TABLE examples CASCADE" );
+        jdbcTemplate.execute("TRUNCATE TABLE examples CASCADE");
     }
 
     // used to populate the database by each test
@@ -96,16 +96,16 @@ class ExampleApiTest {
     @Test
     void serviceShouldAllowFetchingACollection() {
         repository.saveAllAndFlush(List.of(
-           ExampleEntity.builder()
-                   .name("foo")
-                   .description("first example")
-                   .version(99)
-                   .build(),
-           ExampleEntity.builder()
-                   .name("bar")
-                   .description("second example")
-                   .version(99)
-                   .build()
+                ExampleEntity.builder()
+                        .name("foo")
+                        .description("first example")
+                        .version(99)
+                        .build(),
+                ExampleEntity.builder()
+                        .name("bar")
+                        .description("second example")
+                        .version(99)
+                        .build()
         ));
         var response = given().contentType(ContentType.JSON)
                 .when()
@@ -288,13 +288,13 @@ class ExampleApiTest {
         ));
 
         var response = given()
-                    .contentType(ContentType.JSON)
+                .contentType(ContentType.JSON)
                 .when()
-                    .get("/examples/{id}/tags", id)
+                .get("/examples/{id}/tags", id)
                 .then()
-                    .statusCode(200)
-                    .contentType(ContentType.JSON)
-                    .extract().response();
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .extract().response();
         Map<String, String> tags = response.as(new TypeRef<Map<String, String>>() {});
         assert tags != null;
         assert tags.size() == 2;
@@ -314,7 +314,7 @@ class ExampleApiTest {
                         .description("first example")
                         .tags(Map.of(
                                 "foo", "bar",
-                                        "rank", "1"
+                                "rank", "1"
                         ))
                         .build()
         ));

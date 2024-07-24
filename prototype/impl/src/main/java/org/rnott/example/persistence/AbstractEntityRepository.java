@@ -127,7 +127,7 @@ public interface AbstractEntityRepository<T extends AbstractEntity> extends JpaR
     @Query("select e from #{#entityName} e left join fetch e.tags where e.deleted = false and e.id = ?1")
     Optional<T> findByIdWithTags(@NotNull UUID id);
 
-   /**
+    /**
      * Search for entities based on the specified criteria. Results are
      * bounded using the default page size. Note that deleted items are
      * implemented by the criteria and there is no clause used here.

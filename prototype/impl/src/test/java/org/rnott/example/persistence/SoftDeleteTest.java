@@ -1,7 +1,6 @@
 package org.rnott.example.persistence;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +43,7 @@ class SoftDeleteTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     ).withInitScript("test-data.sql");
+
     @DynamicPropertySource
     static void setDatasourceProperties(DynamicPropertyRegistry propertyRegistry) {
         propertyRegistry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -69,6 +69,7 @@ class SoftDeleteTest {
     static void init() {
         postgres.start();
     }
+
     @AfterAll
     static void shutdown() {
         postgres.stop();
@@ -78,7 +79,7 @@ class SoftDeleteTest {
     @BeforeEach
     void setup() {
         List<Author> authors = List.of(
-                new Author("Dan","Brown", LocalDate.of(1964, 6, 22)),
+                new Author("Dan", "Brown", LocalDate.of(1964, 6, 22)),
                 new Author("J.K.", "Rowling", LocalDate.of(1965, 7, 31))
         );
         authorRepository.saveAll(authors).forEach(savedAuthors::add);
@@ -87,7 +88,7 @@ class SoftDeleteTest {
                 new Category("Fantasy"),
                 new Category("Mystery"),
                 new Category("Thriller")
-                );
+        );
         categoryRepository.saveAll(categories).forEach(savedCategories::add);
 
         List<Book> books = List.of(
@@ -108,7 +109,7 @@ class SoftDeleteTest {
                                 .filter(it -> it.getLastName().equals("Rowling"))
                                 .findFirst().orElseThrow(() -> new IllegalStateException("author not found")),
                         savedCategories.stream()
-                            .filter(it -> it.getName().equals("Fantasy"))
+                                .filter(it -> it.getName().equals("Fantasy"))
                                 .toList()
                 ),
                 new Book(
@@ -132,10 +133,10 @@ class SoftDeleteTest {
                 .filter(it -> it.getTitle().equals("Harry Potter and the Half-Blood Prince"))
                 .map(AbstractEntity::getId)
                 .forEach(id -> bookRepository.deleteById(id));
-         savedCategories.stream()
+        savedCategories.stream()
                 .filter(it -> it.getName().equals("Mystery"))
                 .map(AbstractEntity::getId)
-                 .forEach(id -> categoryRepository.deleteById(id));
+                .forEach(id -> categoryRepository.deleteById(id));
         savedAuthors.stream()
                 .filter(it -> it.getLastName().equals("Brown"))
                 .map(AbstractEntity::getId)
@@ -180,7 +181,7 @@ class SoftDeleteTest {
         List<Book> retrievedBooks = bookRepository.findAll();
         // present
         assert retrievedBooks.stream()
-                        .filter(it -> it.getTitle().equals("Harry Potter and the Deathly Hallows"))
+                .filter(it -> it.getTitle().equals("Harry Potter and the Deathly Hallows"))
                 .map(Book::getAuthor)
                 .anyMatch(Objects::nonNull);
         assert retrievedBooks.stream()
@@ -309,12 +310,12 @@ class SoftDeleteTest {
 
     @Test
     void multipleEntitiesCanBeDeleted() {
-       categoryRepository.deleteAll();
+        categoryRepository.deleteAll();
         categoryRepository.flush();
         entityManager.getEntityManager().clear();
         List<Category> all = entityManager.getEntityManager()
                 .createQuery("select e from Category e", Category.class)
-                        .getResultList();
+                .getResultList();
         for (Category it : all) {
             assert it.isDeleted();
         }

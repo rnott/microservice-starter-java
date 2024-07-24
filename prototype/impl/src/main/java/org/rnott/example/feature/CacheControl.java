@@ -15,11 +15,18 @@ import java.lang.annotation.Target;
 public @interface CacheControl {
 
     boolean isNoCache() default false;
+
     int maxAge() default -1;
+
     int sMaxAge() default -1;
+
     boolean isPrivate() default false;
+
     boolean isMustRevalidate() default false;
+
     boolean isProxyRevalidate() default false;
+
     boolean isNoStore() default false;
+
     boolean isNoTransform() default false;
 }

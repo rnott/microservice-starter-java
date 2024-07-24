@@ -4,7 +4,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.rnott.example.api.PageOfExamples;
-import org.rnott.example.api.PagedResult;
 import org.springframework.data.domain.Page;
 
 /**
@@ -14,7 +13,7 @@ import org.springframework.data.domain.Page;
  * @param <PA> the corresponding API collection type
  * @param <E> the entity type
  */
-public interface AbstractEntityMapper <A, PA extends PageOfExamples, E extends AbstractEntity> {
+public interface AbstractEntityMapper<A, PA extends PageOfExamples, E extends AbstractEntity> {
 
     /**
      * Converts an entity to an API type. This configuration handles all the fields
@@ -73,12 +72,11 @@ public interface AbstractEntityMapper <A, PA extends PageOfExamples, E extends A
     @Mapping(source = "totalPages", target = "lastPage")
     @Mapping(source = "pageable.pageSize", target = "pageSize")
     @Mapping(source = "pageable.pageNumber", target = "currentPage")
-   @Mapping(target = "first", ignore = true)
+    @Mapping(target = "first", ignore = true)
     @Mapping(target = "last", ignore = true)
     @Mapping(target = "next", ignore = true)
     @Mapping(target = "previous", ignore = true)
     PA toPage(Page<E> result);
-
 
     @AfterMapping
     default void calculatePage(Page<ExampleEntity> source, @MappingTarget PA page) {
