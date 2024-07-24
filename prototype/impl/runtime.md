@@ -4,7 +4,7 @@ settings are decoupled from the the artifact packaging.
 In development, SpringBoot supports setting envars using the `.env` file. Since these settings often contain
 credentials and other sensitive values, this mechanism must **NEVER** be used outside of development use cases.
 
-Here is the list of expected enars, representative values and a description of what they are used for:
+Here is the list of expected envars, representative values and a description of what they are used for:
 
     # JDBC URL - standard
     SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
@@ -38,3 +38,4 @@ Here is the list of expected enars, representative values and a description of w
 
     # specify the OTEL collector for logs
     OTEL_LOGS_EXPORTER=logging
+

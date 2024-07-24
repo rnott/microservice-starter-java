@@ -52,7 +52,7 @@ mvn clean package -P container
 
 To run the containerized service once it is built in Docker:
 ```
-docker run -p 8080:8080 -t org.rnott.example/example-service  \
+docker run -p 8080:8080 -t org.rnott.example/example-impl  \
 --spring.datasource.url=jdbc:postgresql://172.17.0.2:5432/postgres \
 --spring.datasource.username=dev \
 --spring.datasource.password=4y7sV96vA9wv46VR
@@ -67,4 +67,12 @@ The easiest way to do this is:
 docker exec -it dev-postgres ifconfig eth0
 ````
 
+## Runtime Statistics
+* Image Size: 383 MB
+* Startup Time: 7.## Runtime Statistics
+* Image Size: 373 MB
+* Startup Time: 7.74/8,.236 seconds
+
+## GraalVM
+TBD
 
