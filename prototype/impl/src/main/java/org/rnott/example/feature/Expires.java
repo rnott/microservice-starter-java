@@ -20,5 +20,5 @@ public @interface Expires {
      *
      * @return the length of time expressed as a duration.
      */
-    public String value();
+    String value();
 }
